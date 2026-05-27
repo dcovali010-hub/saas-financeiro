@@ -10,7 +10,7 @@ import { Plus, Bot, ToggleLeft, ToggleRight, Zap, MessageSquare, Settings } from
 import toast from "react-hot-toast";
 import type { AIAgent } from "@/types";
 
-export default function AgenteIAPage() {
+export default function AIAgentPage() {
   const [agents, setAgents] = useState<AIAgent[]>(mockAgents);
   const [modalOpen, setModalOpen] = useState(false);
   const [editAgent, setEditAgent] = useState<AIAgent | null>(null);
@@ -18,7 +18,7 @@ export default function AgenteIAPage() {
 
   const handleCreate = () => {
     if (!form.name || !form.prompt) {
-      toast.error("Nome e prompt são obrigatórios");
+      toast.error("Name and prompt are required");
       return;
     }
     const newAgent: AIAgent = {
@@ -33,12 +33,12 @@ export default function AgenteIAPage() {
     setAgents([...agents, newAgent]);
     setModalOpen(false);
     setForm({ name: "", prompt: "", triggers: "" });
-    toast.success("Agente criado com sucesso!");
+    toast.success("Agent created successfully!");
   };
 
   const handleToggle = (id: string) => {
     setAgents(agents.map((a) => a.id === id ? { ...a, active: !a.active } : a));
-    toast.success("Agente atualizado");
+    toast.success("Agent updated");
   };
 
   const handleEdit = (agent: AIAgent) => {
@@ -54,7 +54,7 @@ export default function AgenteIAPage() {
           ? { ...a, name: form.name, prompt: form.prompt, triggers: form.triggers.split(",").map(t => t.trim()).filter(Boolean) }
           : a
       ));
-      toast.success("Agente atualizado!");
+      toast.success("Agent updated!");
     } else {
       handleCreate();
       return;
@@ -71,14 +71,14 @@ export default function AgenteIAPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-white text-xl font-bold">Agente IA</h2>
+          <h2 className="text-white text-xl font-bold">AI Agent</h2>
           <p className="text-gray-400 text-sm mt-0.5">
-            {activeCount} agente(s) ativo(s) · {totalResponses} respostas no total
+            {activeCount} active agent(s) · {totalResponses} total responses
           </p>
         </div>
         <Button onClick={() => { setEditAgent(null); setForm({ name: "", prompt: "", triggers: "" }); setModalOpen(true); }}>
           <Plus className="w-4 h-4" />
-          Novo Agente
+          New Agent
         </Button>
       </div>
 
@@ -87,17 +87,17 @@ export default function AgenteIAPage() {
         <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-4 text-center">
           <Bot className="w-6 h-6 text-blue-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-white">{agents.length}</p>
-          <p className="text-gray-500 text-xs">Total de Agentes</p>
+          <p className="text-gray-500 text-xs">Total Agents</p>
         </div>
         <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-4 text-center">
           <Zap className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-emerald-400">{activeCount}</p>
-          <p className="text-gray-500 text-xs">Ativos</p>
+          <p className="text-gray-500 text-xs">Active</p>
         </div>
         <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-4 text-center">
           <MessageSquare className="w-6 h-6 text-purple-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-purple-400">{totalResponses}</p>
-          <p className="text-gray-500 text-xs">Respostas</p>
+          <p className="text-gray-500 text-xs">Responses</p>
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export default function AgenteIAPage() {
                 </div>
                 <div>
                   <p className="text-white font-semibold">{agent.name}</p>
-                  <p className="text-gray-500 text-xs">{agent.responses} respostas · criado em {formatDate(agent.created_at)}</p>
+                  <p className="text-gray-500 text-xs">{agent.responses} responses · created on {formatDate(agent.created_at)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -130,12 +130,12 @@ export default function AgenteIAPage() {
                   {agent.active ? (
                     <>
                       <ToggleRight className="w-5 h-5 text-emerald-400" />
-                      <span className="text-emerald-400 font-medium">Ativo</span>
+                      <span className="text-emerald-400 font-medium">Active</span>
                     </>
                   ) : (
                     <>
                       <ToggleLeft className="w-5 h-5 text-gray-500" />
-                      <span className="text-gray-500">Inativo</span>
+                      <span className="text-gray-500">Inactive</span>
                     </>
                   )}
                 </button>
@@ -149,7 +149,7 @@ export default function AgenteIAPage() {
 
             {agent.triggers.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                <span className="text-gray-600 text-xs mr-1">Gatilhos:</span>
+                <span className="text-gray-600 text-xs mr-1">Triggers:</span>
                 {agent.triggers.map((trigger) => (
                   <span
                     key={trigger}
@@ -167,13 +167,13 @@ export default function AgenteIAPage() {
       <Modal
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditAgent(null); }}
-        title={editAgent ? "Editar Agente" : "Novo Agente"}
+        title={editAgent ? "Edit Agent" : "New Agent"}
         size="lg"
       >
         <div className="space-y-4">
           <Input
-            label="Nome do Agente *"
-            placeholder="Ex: Atendimento Inicial"
+            label="Agent Name *"
+            placeholder="e.g. Initial Support"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
@@ -181,21 +181,21 @@ export default function AgenteIAPage() {
             <label className="block text-sm font-medium text-gray-300">Prompt *</label>
             <textarea
               rows={5}
-              placeholder="Descreva como o agente deve se comportar..."
+              placeholder="Describe how the agent should behave..."
               value={form.prompt}
               onChange={(e) => setForm({ ...form, prompt: e.target.value })}
               className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors text-sm resize-none"
             />
           </div>
           <Input
-            label="Gatilhos (separados por vírgula)"
-            placeholder="olá, oi, preciso de ajuda"
+            label="Triggers (comma separated)"
+            placeholder="hello, hi, need help"
             value={form.triggers}
             onChange={(e) => setForm({ ...form, triggers: e.target.value })}
           />
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => { setModalOpen(false); setEditAgent(null); }}>Cancelar</Button>
-            <Button onClick={handleSave}>{editAgent ? "Salvar" : <><Plus className="w-4 h-4" />Criar</>}</Button>
+            <Button variant="secondary" onClick={() => { setModalOpen(false); setEditAgent(null); }}>Cancel</Button>
+            <Button onClick={handleSave}>{editAgent ? "Save" : <><Plus className="w-4 h-4" />Create</>}</Button>
           </div>
         </div>
       </Modal>

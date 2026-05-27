@@ -12,22 +12,22 @@ import toast from "react-hot-toast";
 import type { GeneratedSite } from "@/types";
 
 const businessTypes = [
-  "Restaurante", "Clínica / Saúde", "E-commerce", "Imobiliária",
-  "Advocacia", "Tecnologia", "Educação", "Fotografia", "Beleza & Estética",
-  "Construção Civil", "Financeiro", "Academia / Fitness", "Outros",
+  "Restaurant", "Clinic / Health", "E-commerce", "Real Estate",
+  "Law Firm", "Technology", "Education", "Photography", "Beauty & Aesthetics",
+  "Construction", "Finance", "Gym / Fitness", "Other",
 ];
 
-export default function GerarSitePage() {
+export default function GenerateSitePage() {
   const [sites, setSites] = useState<GeneratedSite[]>(mockGeneratedSites);
   const [modalOpen, setModalOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [form, setForm] = useState({
-    site_name: "", client_name: "", business_type: "Restaurante", domain: "",
+    site_name: "", client_name: "", business_type: "Restaurant", domain: "",
   });
 
   const handleGenerate = async () => {
     if (!form.site_name || !form.client_name || !form.business_type) {
-      toast.error("Preencha todos os campos obrigatórios");
+      toast.error("Please fill in all required fields");
       return;
     }
     setGenerating(true);
@@ -46,27 +46,27 @@ export default function GerarSitePage() {
     setSites([newSite, ...sites]);
     setGenerating(false);
     setModalOpen(false);
-    setForm({ site_name: "", client_name: "", business_type: "Restaurante", domain: "" });
-    toast.success("Site criado com IA! Em produção.");
+    setForm({ site_name: "", client_name: "", business_type: "Restaurant", domain: "" });
+    toast.success("Site created with AI! Now in production.");
   };
 
   const updateStatus = (id: string, status: GeneratedSite["status"]) => {
     setSites(sites.map((s) => (s.id === id ? { ...s, status } : s)));
-    toast.success("Status atualizado");
+    toast.success("Status updated");
   };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-white text-xl font-bold">Gerar Site com IA</h2>
+          <h2 className="text-white text-xl font-bold">Generate Site with AI</h2>
           <p className="text-gray-400 text-sm mt-0.5">
-            {sites.length} sites gerados · {sites.filter(s => s.status === "publicado").length} publicados
+            {sites.length} sites generated · {sites.filter(s => s.status === "publicado").length} published
           </p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <Wand2 className="w-4 h-4" />
-          Gerar Novo Site
+          Generate New Site
         </Button>
       </div>
 
@@ -107,17 +107,17 @@ export default function GerarSitePage() {
 
             <div className="space-y-2 mb-4">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Tipo de negócio</span>
+                <span className="text-gray-500">Business type</span>
                 <span className="text-gray-300">{site.business_type}</span>
               </div>
               {site.domain && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Domínio</span>
+                  <span className="text-gray-500">Domain</span>
                   <span className="text-blue-400">{site.domain}</span>
                 </div>
               )}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Criado em</span>
+                <span className="text-gray-500">Created on</span>
                 <span className="text-gray-300">{formatDate(site.created_at)}</span>
               </div>
             </div>
@@ -146,7 +146,7 @@ export default function GerarSitePage() {
                   className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   <ExternalLink className="w-3 h-3" />
-                  Ver site
+                  View site
                 </a>
               )}
             </div>
@@ -154,22 +154,22 @@ export default function GerarSitePage() {
         ))}
       </div>
 
-      <Modal open={modalOpen} onClose={() => !generating && setModalOpen(false)} title="Gerar Site com IA" size="lg">
+      <Modal open={modalOpen} onClose={() => !generating && setModalOpen(false)} title="Generate Site with AI" size="lg">
         <div className="space-y-4">
           <Input
-            label="Nome do Site *"
-            placeholder="Ex: Tech Solutions"
+            label="Site Name *"
+            placeholder="e.g. Tech Solutions"
             value={form.site_name}
             onChange={(e) => setForm({ ...form, site_name: e.target.value })}
           />
           <Input
-            label="Cliente *"
-            placeholder="Nome do cliente"
+            label="Client *"
+            placeholder="Client name"
             value={form.client_name}
             onChange={(e) => setForm({ ...form, client_name: e.target.value })}
           />
           <Select
-            label="Tipo de Negócio *"
+            label="Business Type *"
             value={form.business_type}
             onChange={(e) => setForm({ ...form, business_type: e.target.value })}
           >
@@ -178,8 +178,8 @@ export default function GerarSitePage() {
             ))}
           </Select>
           <Input
-            label="Domínio (opcional)"
-            placeholder="exemplo.com.br"
+            label="Domain (optional)"
+            placeholder="example.com"
             value={form.domain}
             onChange={(e) => setForm({ ...form, domain: e.target.value })}
           />
@@ -187,22 +187,22 @@ export default function GerarSitePage() {
           <div className="flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
             <Wand2 className="w-5 h-5 text-blue-400 flex-shrink-0" />
             <p className="text-blue-300 text-sm">
-              A IA vai criar a estrutura, layout e conteúdo do site baseado no tipo de negócio informado.
+              AI will create the structure, layout and content based on the business type provided.
             </p>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={generating}>Cancelar</Button>
+            <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={generating}>Cancel</Button>
             <Button onClick={handleGenerate} disabled={generating}>
               {generating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Gerando...
+                  Generating...
                 </>
               ) : (
                 <>
                   <Wand2 className="w-4 h-4" />
-                  Gerar com IA
+                  Generate with AI
                 </>
               )}
             </Button>

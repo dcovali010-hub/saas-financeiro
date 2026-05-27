@@ -24,11 +24,11 @@ import type { WhatsAppMessage } from "@/types";
 const templates = [
   {
     id: "billing",
-    name: "Cobrança",
+    name: "Billing",
     icon: DollarSign,
     color: "text-amber-400",
     bg: "bg-amber-500/10 border-amber-500/20",
-    text: "Olá {{nome}}, sua fatura de {{valor}} vence em {{data}}. Acesse o link para pagamento: {{link}}",
+    text: "Hi {{name}}, your invoice of {{amount}} is due on {{date}}. Click the link to pay: {{link}}",
   },
   {
     id: "followup",
@@ -36,15 +36,15 @@ const templates = [
     icon: Bell,
     color: "text-blue-400",
     bg: "bg-blue-500/10 border-blue-500/20",
-    text: "Olá {{nome}}! Como está indo o seu site? Precisando de alguma atualização ou suporte, é só chamar!",
+    text: "Hi {{name}}! How is your website going? Need any updates or support? Just reach out!",
   },
   {
     id: "welcome",
-    name: "Boas-vindas",
+    name: "Welcome",
     icon: MessageCircle,
     color: "text-emerald-400",
     bg: "bg-emerald-500/10 border-emerald-500/20",
-    text: "Olá {{nome}}, seja bem-vindo(a)! Somos a AgênciaSaaS e estamos prontos para ajudar com seu projeto.",
+    text: "Hi {{name}}, welcome! We are AgencySaaS and we're ready to help with your project.",
   },
 ];
 
@@ -82,12 +82,12 @@ export default function WhatsAppPage() {
     };
     setMessages([...messages, msg]);
     setNewMessage("");
-    toast.success("Mensagem enviada!");
+    toast.success("Message sent!");
   };
 
   const handleBulk = () => {
     if (!bulkForm.phone || !bulkForm.contact) {
-      toast.error("Preencha todos os campos");
+      toast.error("Please fill in all fields");
       return;
     }
     const tmpl = templates.find((t) => t.id === bulkForm.template);
@@ -104,11 +104,11 @@ export default function WhatsAppPage() {
     setMessages([...messages, msg]);
     setBulkModal(false);
     setBulkForm({ template: "billing", phone: "", contact: "" });
-    toast.success("Mensagem de template enviada!");
+    toast.success("Template message sent!");
   };
 
   const formatTime = (ts: string) => {
-    return new Date(ts).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(ts).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   };
 
   const getTypeBadge = (type: WhatsAppMessage["type"]) => {
@@ -118,7 +118,7 @@ export default function WhatsAppPage() {
       billing: "bg-amber-500/20 text-amber-400 border-amber-500/30",
       followup: "bg-purple-500/20 text-purple-400 border-purple-500/30",
     };
-    const labels: Record<string, string> = { text: "Texto", template: "Template", billing: "Cobrança", followup: "Follow-up" };
+    const labels: Record<string, string> = { text: "Text", template: "Template", billing: "Billing", followup: "Follow-up" };
     return { color: map[type] ?? map.text, label: labels[type] ?? type };
   };
 
@@ -128,12 +128,12 @@ export default function WhatsAppPage() {
         <div>
           <h2 className="text-white text-xl font-bold">WhatsApp</h2>
           <p className="text-gray-400 text-sm mt-0.5">
-            {messages.length} mensagens · {contacts.length} contatos
+            {messages.length} messages · {contacts.length} contacts
           </p>
         </div>
         <Button onClick={() => setBulkModal(true)}>
           <FileText className="w-4 h-4" />
-          Enviar Template
+          Send Template
         </Button>
       </div>
 
@@ -155,7 +155,7 @@ export default function WhatsAppPage() {
         {/* Contacts list */}
         <div className="w-48 sm:w-64 border-r border-[#1f2937] flex flex-col flex-shrink-0">
           <div className="p-3 border-b border-[#1f2937]">
-            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">Conversas</p>
+            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">Conversations</p>
           </div>
           <div className="flex-1 overflow-y-auto">
             {contacts.map((contact) => {
@@ -221,7 +221,7 @@ export default function WhatsAppPage() {
               <div className="p-4 border-t border-[#1f2937] flex gap-2">
                 <input
                   type="text"
-                  placeholder="Digite uma mensagem..."
+                  placeholder="Type a message..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -240,7 +240,7 @@ export default function WhatsAppPage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <MessageCircle className="w-10 h-10 text-gray-700 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">Selecione uma conversa</p>
+                <p className="text-gray-500 text-sm">Select a conversation</p>
               </div>
             </div>
           )}
@@ -248,20 +248,20 @@ export default function WhatsAppPage() {
       </div>
 
       {/* Bulk/Template Modal */}
-      <Modal open={bulkModal} onClose={() => setBulkModal(false)} title="Enviar Template">
+      <Modal open={bulkModal} onClose={() => setBulkModal(false)} title="Send Template">
         <div className="space-y-4">
           <Select label="Template" value={bulkForm.template} onChange={(e) => setBulkForm({ ...bulkForm, template: e.target.value })}>
             {templates.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </Select>
           <div className="p-3 bg-[#0a0f1e] rounded-xl">
-            <p className="text-gray-400 text-xs mb-1">Prévia</p>
+            <p className="text-gray-400 text-xs mb-1">Preview</p>
             <p className="text-gray-300 text-sm">{templates.find(t => t.id === bulkForm.template)?.text}</p>
           </div>
-          <Input label="Nome do Contato *" placeholder="Tech Solutions" value={bulkForm.contact} onChange={(e) => setBulkForm({ ...bulkForm, contact: e.target.value })} />
-          <Input label="Número WhatsApp *" placeholder="+5511999999999" value={bulkForm.phone} onChange={(e) => setBulkForm({ ...bulkForm, phone: e.target.value })} />
+          <Input label="Contact Name *" placeholder="Tech Solutions" value={bulkForm.contact} onChange={(e) => setBulkForm({ ...bulkForm, contact: e.target.value })} />
+          <Input label="WhatsApp Number *" placeholder="+1 555 999 9999" value={bulkForm.phone} onChange={(e) => setBulkForm({ ...bulkForm, phone: e.target.value })} />
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setBulkModal(false)}>Cancelar</Button>
-            <Button onClick={handleBulk}><Send className="w-4 h-4" />Enviar</Button>
+            <Button variant="secondary" onClick={() => setBulkModal(false)}>Cancel</Button>
+            <Button onClick={handleBulk}><Send className="w-4 h-4" />Send</Button>
           </div>
         </div>
       </Modal>

@@ -19,19 +19,19 @@ export default function LoginPage() {
     setLoading(true);
     const ok = await login(email, password);
     if (ok) {
-      toast.success("Login realizado com sucesso!");
+      toast.success("Logged in successfully!");
       router.push("/dashboard");
     } else {
-      toast.error("Email ou senha inválidos");
+      toast.error("Invalid email or password");
     }
     setLoading(false);
   };
 
   const demoLogins = [
     { label: "Admin", email: "admin@agencia.com", color: "text-purple-400" },
-    { label: "Financeiro", email: "financeiro@agencia.com", color: "text-blue-400" },
-    { label: "Suporte", email: "suporte@agencia.com", color: "text-cyan-400" },
-    { label: "Vendedor", email: "vendedor@agencia.com", color: "text-emerald-400" },
+    { label: "Finance", email: "financeiro@agencia.com", color: "text-blue-400" },
+    { label: "Support", email: "suporte@agencia.com", color: "text-cyan-400" },
+    { label: "Sales", email: "vendedor@agencia.com", color: "text-emerald-400" },
   ];
 
   return (
@@ -47,10 +47,10 @@ export default function LoginPage() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white font-bold text-xl">AgênciaSaaS</span>
+            <span className="text-white font-bold text-xl">AgencySaaS</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Bem-vindo de volta</h1>
-          <p className="text-gray-400 text-sm">Entre com suas credenciais para acessar</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
+          <p className="text-gray-400 text-sm">Sign in with your credentials to access</p>
         </div>
 
         <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-8">
@@ -63,7 +63,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder="your@email.com"
                 required
                 className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
               />
@@ -71,7 +71,7 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Senha
+                Password
               </label>
               <div className="relative">
                 <input
@@ -102,14 +102,14 @@ export default function LoginPage() {
               ) : (
                 <>
                   <LogIn className="w-4 h-4" />
-                  Entrar
+                  Sign In
                 </>
               )}
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-[#1f2937]">
-            <p className="text-xs text-gray-500 text-center mb-3">Acesso demo (senha: 123456)</p>
+            <p className="text-xs text-gray-500 text-center mb-3">Demo access (password: 123456)</p>
             <div className="grid grid-cols-2 gap-2">
               {demoLogins.map((d) => (
                 <button

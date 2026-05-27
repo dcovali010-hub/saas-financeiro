@@ -4,8 +4,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "AgênciaSaaS | Sistema Financeiro",
-  description: "Sistema de gestão financeira para agências digitais",
+  title: "AgencySaaS | Financial System",
+  description: "Financial management system for digital agencies",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <body>
         <AuthProvider>
           {children}

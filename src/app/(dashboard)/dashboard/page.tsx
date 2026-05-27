@@ -23,39 +23,39 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         <StatsCard
-          title="Receita Total"
+          title="Total Revenue"
           value={formatCurrency(mockStats.total_revenue)}
-          subtitle="Acumulado geral"
+          subtitle="All time"
           trend={mockStats.monthly_growth}
           icon={DollarSign}
           gradientClass="stat-card-gradient-1"
         />
         <StatsCard
-          title="Receita Mensal"
+          title="Monthly Revenue"
           value={formatCurrency(mockStats.monthly_revenue)}
-          subtitle="Maio 2025"
+          subtitle="May 2025"
           trend={18.5}
           icon={TrendingUp}
           gradientClass="stat-card-gradient-2"
         />
         <StatsCard
-          title="Total de Pedidos"
+          title="Total Orders"
           value={String(mockStats.total_orders)}
-          subtitle={`${pendingOrders.length} pendentes`}
+          subtitle={`${pendingOrders.length} pending`}
           icon={ShoppingCart}
           gradientClass="stat-card-gradient-3"
         />
         <StatsCard
-          title="Clientes"
+          title="Clients"
           value={String(mockStats.total_clients)}
-          subtitle="Clientes ativos"
+          subtitle="Active clients"
           icon={Users}
           gradientClass="stat-card-gradient-1"
         />
         <StatsCard
-          title="Pagamentos Pendentes"
+          title="Pending Payments"
           value={String(mockStats.pending_payments)}
-          subtitle="Aguardando confirmação"
+          subtitle="Awaiting confirmation"
           icon={AlertCircle}
           gradientClass="stat-card-gradient-6"
         />
@@ -66,14 +66,14 @@ export default function DashboardPage() {
         <div className="xl:col-span-2 bg-[#111827] border border-[#1f2937] rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between p-5 border-b border-[#1f2937]">
             <div>
-              <h2 className="text-white font-semibold">Pedidos Recentes</h2>
-              <p className="text-gray-500 text-xs mt-0.5">Últimas transações</p>
+              <h2 className="text-white font-semibold">Recent Orders</h2>
+              <p className="text-gray-500 text-xs mt-0.5">Latest transactions</p>
             </div>
             <Link
               href="/sales/pedidos"
               className="flex items-center gap-1 text-blue-400 hover:text-blue-300 text-sm transition-colors"
             >
-              Ver todos <ArrowRight className="w-3 h-3" />
+              View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
@@ -109,12 +109,12 @@ export default function DashboardPage() {
         <div className="space-y-4">
           {/* Quick Actions */}
           <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-5">
-            <h2 className="text-white font-semibold mb-4">Ações Rápidas</h2>
+            <h2 className="text-white font-semibold mb-4">Quick Actions</h2>
             <div className="space-y-2">
               {[
-                { label: "Novo Pedido", href: "/sales/pedidos", color: "text-blue-400" },
-                { label: "Novo Cliente", href: "/sales/clientes", color: "text-emerald-400" },
-                { label: "Gerar Site com IA", href: "/ia/gerar-site", color: "text-cyan-400" },
+                { label: "New Order", href: "/sales/pedidos", color: "text-blue-400" },
+                { label: "New Client", href: "/sales/clientes", color: "text-emerald-400" },
+                { label: "Generate Site with AI", href: "/ia/gerar-site", color: "text-cyan-400" },
               ].map((action) => (
                 <Link
                   key={action.href}
@@ -133,12 +133,12 @@ export default function DashboardPage() {
           {/* Top clients */}
           <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white font-semibold">Top Clientes</h2>
+              <h2 className="text-white font-semibold">Top Clients</h2>
               <Link
                 href="/sales/clientes"
                 className="text-blue-400 hover:text-blue-300 text-xs transition-colors"
               >
-                Ver todos
+                View all
               </Link>
             </div>
             <div className="space-y-3">
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-sm font-medium truncate">{client.name}</p>
-                    <p className="text-gray-500 text-xs">{client.total_orders} pedidos</p>
+                    <p className="text-gray-500 text-xs">{client.total_orders} orders</p>
                   </div>
                   <p className="text-gray-300 text-xs font-medium whitespace-nowrap">
                     {formatCurrency(client.total_spent)}
@@ -162,7 +162,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

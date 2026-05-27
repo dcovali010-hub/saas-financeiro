@@ -35,25 +35,25 @@ interface NavSection {
 
 const navSections: NavSection[] = [
   {
-    title: "PRINCIPAL",
+    title: "MAIN",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     ],
   },
   {
-    title: "SALES / VENDAS",
+    title: "SALES",
     items: [
-      { label: "Pedidos", href: "/sales/pedidos", icon: ShoppingCart },
-      { label: "Clientes", href: "/sales/clientes", icon: Users },
-      { label: "Usuários", href: "/sales/usuarios", icon: UserCog },
-      { label: "Domínios", href: "/sales/dominios", icon: Globe },
+      { label: "Orders", href: "/sales/pedidos", icon: ShoppingCart },
+      { label: "Clients", href: "/sales/clientes", icon: Users },
+      { label: "Users", href: "/sales/usuarios", icon: UserCog },
+      { label: "Domains", href: "/sales/dominios", icon: Globe },
     ],
   },
   {
-    title: "IA & COMUNICAÇÃO",
+    title: "AI & COMMUNICATION",
     items: [
-      { label: "Agente IA", href: "/ia/agente", icon: Bot },
-      { label: "Gerar Site", href: "/ia/gerar-site", icon: Wand2 },
+      { label: "AI Agent", href: "/ia/agente", icon: Bot },
+      { label: "Generate Site", href: "/ia/gerar-site", icon: Wand2 },
       { label: "WhatsApp", href: "/ia/whatsapp", icon: MessageCircle },
     ],
   },
@@ -66,7 +66,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logout realizado com sucesso");
+    toast.success("Logged out successfully");
     router.push("/login");
     onClose?.();
   };
@@ -82,8 +82,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             <Zap className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">AgênciaSaaS</p>
-            <p className="text-gray-500 text-xs">Painel Financeiro</p>
+            <p className="text-white font-bold text-sm leading-tight">AgencySaaS</p>
+            <p className="text-gray-500 text-xs">Financial Panel</p>
           </div>
         </div>
         {onClose && (
@@ -153,7 +153,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
-          <span>Sair</span>
+          <span>Sign Out</span>
         </button>
       </div>
     </div>

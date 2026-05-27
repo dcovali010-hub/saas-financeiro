@@ -11,7 +11,7 @@ import { Plus, Globe, RefreshCw, AlertTriangle, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import type { Domain } from "@/types";
 
-export default function SalesDominiosPage() {
+export default function SalesDomainsPage() {
   const [domains, setDomains] = useState<Domain[]>(mockDomains);
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function SalesDominiosPage() {
 
   const handleCreate = () => {
     if (!form.domain || !form.client_name || !form.expiry_date) {
-      toast.error("Preencha os campos obrigatórios");
+      toast.error("Please fill in all required fields");
       return;
     }
     const newDomain: Domain = {
@@ -49,7 +49,7 @@ export default function SalesDominiosPage() {
     setDomains([newDomain, ...domains]);
     setModalOpen(false);
     setForm({ domain: "", client_name: "", expiry_date: "", registrar: "", price_yearly: "", auto_renew: "true" });
-    toast.success("Domínio cadastrado!");
+    toast.success("Domain registered!");
   };
 
   const handleRenew = (id: string) => {
@@ -59,24 +59,24 @@ export default function SalesDominiosPage() {
       current.setFullYear(current.getFullYear() + 1);
       return { ...d, expiry_date: current.toISOString().split("T")[0], status: "ativo" };
     }));
-    toast.success("Domínio renovado por +1 ano!");
+    toast.success("Domain renewed for +1 year!");
   };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-white text-xl font-bold">Domínios</h2>
+          <h2 className="text-white text-xl font-bold">Domains</h2>
           <p className="text-gray-400 text-sm mt-0.5">
-            {filtered.length} domínios
+            {filtered.length} domains
             {expiringCount > 0 && (
-              <span className="ml-2 text-amber-400">· {expiringCount} vencendo em breve</span>
+              <span className="ml-2 text-amber-400">· {expiringCount} expiring soon</span>
             )}
           </p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <Plus className="w-4 h-4" />
-          Novo Domínio
+          New Domain
         </Button>
       </div>
 
@@ -84,7 +84,7 @@ export default function SalesDominiosPage() {
         <div className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
           <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
           <p className="text-amber-300 text-sm">
-            <strong>{expiringCount} domínio(s)</strong> vencendo nos próximos 30 dias. Verifique e renove.
+            <strong>{expiringCount} domain(s)</strong> expiring in the next 30 days. Please review and renew.
           </p>
         </div>
       )}
@@ -93,7 +93,7 @@ export default function SalesDominiosPage() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
         <input
           type="text"
-          placeholder="Buscar domínio ou cliente..."
+          placeholder="Search domain or client..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-[#111827] border border-[#1f2937] rounded-xl pl-9 pr-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 text-sm"
@@ -105,12 +105,12 @@ export default function SalesDominiosPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#1f2937]">
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Domínio</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Cliente</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden md:table-cell">Vencimento</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Domain</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Client</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden md:table-cell">Expiry</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Status</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden lg:table-cell">Renovação Auto</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden lg:table-cell">Valor/Ano</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden lg:table-cell">Auto Renew</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5 hidden lg:table-cell">Price/Year</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
@@ -140,7 +140,7 @@ export default function SalesDominiosPage() {
                   </td>
                   <td className="px-5 py-4 hidden lg:table-cell">
                     <span className={domain.auto_renew ? "text-emerald-400 text-sm" : "text-gray-500 text-sm"}>
-                      {domain.auto_renew ? "Sim" : "Não"}
+                      {domain.auto_renew ? "Yes" : "No"}
                     </span>
                   </td>
                   <td className="px-5 py-4 hidden lg:table-cell">
@@ -152,7 +152,7 @@ export default function SalesDominiosPage() {
                       className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
-                      Renovar
+                      Renew
                     </button>
                   </td>
                 </tr>
@@ -162,20 +162,20 @@ export default function SalesDominiosPage() {
         </div>
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Novo Domínio">
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Domain">
         <div className="space-y-4">
-          <Input label="Domínio *" placeholder="exemplo.com.br" value={form.domain} onChange={(e) => setForm({ ...form, domain: e.target.value })} />
-          <Input label="Cliente *" placeholder="Nome do cliente" value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} />
-          <Input label="Data de Vencimento *" type="date" value={form.expiry_date} onChange={(e) => setForm({ ...form, expiry_date: e.target.value })} />
-          <Input label="Registrador" placeholder="Registro.br, GoDaddy..." value={form.registrar} onChange={(e) => setForm({ ...form, registrar: e.target.value })} />
-          <Input label="Valor Anual (R$)" type="number" placeholder="45.00" value={form.price_yearly} onChange={(e) => setForm({ ...form, price_yearly: e.target.value })} />
-          <Select label="Renovação Automática" value={form.auto_renew} onChange={(e) => setForm({ ...form, auto_renew: e.target.value })}>
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
+          <Input label="Domain *" placeholder="example.com" value={form.domain} onChange={(e) => setForm({ ...form, domain: e.target.value })} />
+          <Input label="Client *" placeholder="Client name" value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} />
+          <Input label="Expiry Date *" type="date" value={form.expiry_date} onChange={(e) => setForm({ ...form, expiry_date: e.target.value })} />
+          <Input label="Registrar" placeholder="GoDaddy, Namecheap..." value={form.registrar} onChange={(e) => setForm({ ...form, registrar: e.target.value })} />
+          <Input label="Yearly Price ($)" type="number" placeholder="45.00" value={form.price_yearly} onChange={(e) => setForm({ ...form, price_yearly: e.target.value })} />
+          <Select label="Auto Renew" value={form.auto_renew} onChange={(e) => setForm({ ...form, auto_renew: e.target.value })}>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
           </Select>
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>Cancelar</Button>
-            <Button onClick={handleCreate}><Plus className="w-4 h-4" />Cadastrar</Button>
+            <Button variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate}><Plus className="w-4 h-4" />Register</Button>
           </div>
         </div>
       </Modal>

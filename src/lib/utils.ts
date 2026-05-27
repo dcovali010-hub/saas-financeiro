@@ -6,14 +6,14 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("pt-BR", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "BRL",
+    currency: "USD",
   }).format(value);
 }
 
 export function formatDate(date: string): string {
-  return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+  return new Intl.DateTimeFormat("en-US").format(new Date(date));
 }
 
 export function formatDateRelative(date: string): string {
@@ -22,12 +22,12 @@ export function formatDateRelative(date: string): string {
   const diff = target.getTime() - now.getTime();
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
-  if (days < 0) return `Venceu há ${Math.abs(days)} dias`;
-  if (days === 0) return "Vence hoje";
-  if (days === 1) return "Vence amanhã";
-  if (days <= 7) return `Vence em ${days} dias`;
-  if (days <= 30) return `Vence em ${Math.ceil(days / 7)} semanas`;
-  return `Vence em ${Math.ceil(days / 30)} meses`;
+  if (days < 0) return `Expired ${Math.abs(days)} days ago`;
+  if (days === 0) return "Expires today";
+  if (days === 1) return "Expires tomorrow";
+  if (days <= 7) return `Expires in ${days} days`;
+  if (days <= 30) return `Expires in ${Math.ceil(days / 7)} weeks`;
+  return `Expires in ${Math.ceil(days / 30)} months`;
 }
 
 export function getStatusColor(status: string): string {
@@ -50,18 +50,18 @@ export function getStatusColor(status: string): string {
 
 export function getStatusLabel(status: string): string {
   const labels: Record<string, string> = {
-    ativo: "Ativo",
-    concluido: "Concluído",
-    pendente: "Pendente",
-    processando: "Processando",
-    cancelado: "Cancelado",
-    suspenso: "Suspenso",
-    vencido: "Vencido",
-    transferindo: "Transferindo",
-    rascunho: "Rascunho",
-    em_producao: "Em Produção",
-    publicado: "Publicado",
-    pausado: "Pausado",
+    ativo: "Active",
+    concluido: "Completed",
+    pendente: "Pending",
+    processando: "Processing",
+    cancelado: "Cancelled",
+    suspenso: "Suspended",
+    vencido: "Expired",
+    transferindo: "Transferring",
+    rascunho: "Draft",
+    em_producao: "In Production",
+    publicado: "Published",
+    pausado: "Paused",
   };
   return labels[status] || status;
 }
@@ -78,10 +78,10 @@ export function getRoleColor(role: string): string {
 
 export function getRoleLabel(role: string): string {
   const labels: Record<string, string> = {
-    admin: "Administrador",
-    financeiro: "Financeiro",
-    suporte: "Suporte",
-    vendedor: "Vendedor",
+    admin: "Administrator",
+    financeiro: "Finance",
+    suporte: "Support",
+    vendedor: "Sales",
   };
   return labels[role] || role;
 }
