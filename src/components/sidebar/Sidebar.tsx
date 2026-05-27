@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import type { UserRole } from "@/types";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -26,35 +27,42 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  roles: UserRole[];
 }
 
 interface NavSection {
   title: string;
+  roles: UserRole[];
   items: NavItem[];
 }
+
+const ALL_ROLES: UserRole[] = ["admin", "financeiro", "suporte", "vendedor"];
 
 const navSections: NavSection[] = [
   {
     title: "MAIN",
+    roles: ALL_ROLES,
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ALL_ROLES },
     ],
   },
   {
     title: "SALES",
+    roles: ALL_ROLES,
     items: [
-      { label: "Orders", href: "/sales/pedidos", icon: ShoppingCart },
-      { label: "Clients", href: "/sales/clientes", icon: Users },
-      { label: "Users", href: "/sales/usuarios", icon: UserCog },
-      { label: "Domains", href: "/sales/dominios", icon: Globe },
+      { label: "Orders", href: "/sales/pedidos", icon: ShoppingCart, roles: ["admin", "financeiro", "vendedor"] },
+      { label: "Clients", href: "/sales/clientes", icon: Users, roles: ALL_ROLES },
+      { label: "Users", href: "/sales/usuarios", icon: UserCog, roles: ["admin"] },
+      { label: "Domains", href: "/sales/dominios", icon: Globe, roles: ALL_ROLES },
     ],
   },
   {
     title: "AI & COMMUNICATION",
+    roles: ["admin"],
     items: [
-      { label: "AI Agent", href: "/ia/agente", icon: Bot },
-      { label: "Generate Site", href: "/ia/gerar-site", icon: Wand2 },
-      { label: "WhatsApp", href: "/ia/whatsapp", icon: MessageCircle },
+      { label: "AI Agent", href: "/ia/agente", icon: Bot, roles: ["admin"] },
+      { label: "Generate Site", href: "/ia/gerar-site", icon: Wand2, roles: ["admin"] },
+      { label: "WhatsApp", href: "/ia/whatsapp", icon: MessageCircle, roles: ["admin"] },
     ],
   },
 ];
@@ -63,6 +71,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const role = user?.role as UserRole | undefined;
 
   const handleLogout = () => {
     logout();
@@ -87,10 +96,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           </div>
         </div>
         {onClose && (
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors lg:hidden"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors lg:hidden">
             <X className="w-5 h-5" />
           </button>
         )}
@@ -98,56 +104,52 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-        {navSections.map((section) => (
-          <div key={section.title} className="mb-4">
-            <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest px-3 mb-2">
-              {section.title}
-            </p>
-            {section.items.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative",
-                    active
-                      ? "sidebar-item-active text-white"
-                      : "text-gray-400 hover:bg-[#1f2937] hover:text-gray-200"
-                  )}
-                >
-                  <item.icon
-                    className={cn(
-                      "w-4 h-4 flex-shrink-0 transition-colors",
-                      active ? "text-white" : "text-gray-500 group-hover:text-gray-300"
-                    )}
-                  />
-                  <span className="truncate">{item.label}</span>
-                  {active && (
-                    <ChevronRight className="w-3 h-3 ml-auto text-blue-300 opacity-70" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+        {navSections
+          .filter((section) => role && section.roles.includes(role))
+          .map((section) => {
+            const visibleItems = section.items.filter((item) => role && item.roles.includes(role));
+            if (visibleItems.length === 0) return null;
+            return (
+              <div key={section.title} className="mb-4">
+                <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest px-3 mb-2">
+                  {section.title}
+                </p>
+                {visibleItems.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={onClose}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative",
+                        active
+                          ? "sidebar-item-active text-white"
+                          : "text-gray-400 hover:bg-[#1f2937] hover:text-gray-200"
+                      )}
+                    >
+                      <item.icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", active ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
+                      <span className="truncate">{item.label}</span>
+                      {active && <ChevronRight className="w-3 h-3 ml-auto text-blue-300 opacity-70" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            );
+          })}
       </nav>
 
       {/* User + Logout */}
       <div className="border-t border-[#1f2937] p-3 flex-shrink-0">
         <div className="flex items-center gap-3 px-2 py-2 mb-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">
-              {user?.name?.charAt(0) ?? "A"}
-            </span>
+            <span className="text-white text-xs font-bold">{user?.name?.charAt(0) ?? "A"}</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-medium truncate">{user?.name}</p>
             <p className="text-gray-500 text-xs truncate capitalize">{user?.role}</p>
           </div>
         </div>
-
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
@@ -165,7 +167,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#111827] border border-[#1f2937] text-gray-300 hover:text-white transition-colors"
@@ -173,17 +174,12 @@ export default function Sidebar() {
         <Menu className="w-5 h-5" />
       </button>
 
-      {/* Desktop sidebar */}
       <aside className="hidden lg:flex flex-col w-[260px] bg-[#0a0f1e] border-r border-[#1f2937] h-screen fixed left-0 top-0 z-40">
         <SidebarContent />
       </aside>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 z-50 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        >
+        <div className="fixed inset-0 z-50 lg:hidden" onClick={() => setMobileOpen(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <aside
             className="absolute left-0 top-0 h-full w-[260px] bg-[#0a0f1e] border-r border-[#1f2937] animate-slide-in"

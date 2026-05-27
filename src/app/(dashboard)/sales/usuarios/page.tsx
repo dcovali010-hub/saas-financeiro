@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { mockUsers } from "@/lib/mock-data";
 import { getRoleColor, getRoleLabel } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
@@ -19,10 +22,18 @@ const rolePermissions: Record<UserRole, string[]> = {
 };
 
 export default function SalesUsersPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [modalOpen, setModalOpen] = useState(false);
   const [permModal, setPermModal] = useState<User | null>(null);
   const [form, setForm] = useState({ name: "", email: "", role: "vendedor" as UserRole });
+
+  useEffect(() => {
+    if (user && user.role !== "admin") router.replace("/dashboard");
+  }, [user, router]);
+
+  if (!user || user.role !== "admin") return null;
 
   const handleCreate = () => {
     if (!form.name || !form.email) {

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { mockMessages } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -56,11 +58,19 @@ function MessageStatusIcon({ status }: { status: WhatsAppMessage["status"] }) {
 }
 
 export default function WhatsAppPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [messages, setMessages] = useState<WhatsAppMessage[]>(mockMessages);
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [bulkModal, setBulkModal] = useState(false);
   const [bulkForm, setBulkForm] = useState({ template: "billing", phone: "", contact: "" });
+
+  useEffect(() => {
+    if (user && user.role !== "admin") router.replace("/dashboard");
+  }, [user, router]);
+
+  if (!user || user.role !== "admin") return null;
 
   const contacts = Array.from(new Set(messages.map((m) => m.contact)));
   const contactMessages = selectedContact

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { mockAgents } from "@/lib/mock-data";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -11,10 +13,18 @@ import toast from "react-hot-toast";
 import type { AIAgent } from "@/types";
 
 export default function AIAgentPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [agents, setAgents] = useState<AIAgent[]>(mockAgents);
   const [modalOpen, setModalOpen] = useState(false);
   const [editAgent, setEditAgent] = useState<AIAgent | null>(null);
   const [form, setForm] = useState({ name: "", prompt: "", triggers: "" });
+
+  useEffect(() => {
+    if (user && user.role !== "admin") router.replace("/dashboard");
+  }, [user, router]);
+
+  if (!user || user.role !== "admin") return null;
 
   const handleCreate = () => {
     if (!form.name || !form.prompt) {

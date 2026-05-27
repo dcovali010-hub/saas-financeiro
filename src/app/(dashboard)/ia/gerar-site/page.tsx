@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { mockGeneratedSites } from "@/lib/mock-data";
 import { formatDate, getStatusColor, getStatusLabel } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
@@ -18,12 +20,20 @@ const businessTypes = [
 ];
 
 export default function GenerateSitePage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [sites, setSites] = useState<GeneratedSite[]>(mockGeneratedSites);
   const [modalOpen, setModalOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [form, setForm] = useState({
     site_name: "", client_name: "", business_type: "Restaurant", domain: "",
   });
+
+  useEffect(() => {
+    if (user && user.role !== "admin") router.replace("/dashboard");
+  }, [user, router]);
+
+  if (!user || user.role !== "admin") return null;
 
   const handleGenerate = async () => {
     if (!form.site_name || !form.client_name || !form.business_type) {
