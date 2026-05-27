@@ -3,23 +3,20 @@
 import Link from "next/link";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Badge } from "@/components/ui/Badge";
-import { mockStats, mockOrders, mockClients, mockHostings } from "@/lib/mock-data";
+import { mockStats, mockOrders, mockClients } from "@/lib/mock-data";
 import { formatCurrency, formatDate, getStatusColor, getStatusLabel } from "@/lib/utils";
 import {
   DollarSign,
   TrendingUp,
   ShoppingCart,
   Users,
-  Server,
   AlertCircle,
   ArrowRight,
-  Clock,
 } from "lucide-react";
 
 export default function DashboardPage() {
   const recentOrders = mockOrders.slice(0, 5);
   const pendingOrders = mockOrders.filter((o) => o.status === "pendente");
-  const activeHostings = mockHostings.filter((h) => h.status === "ativo");
 
   return (
     <div className="space-y-6">
@@ -54,13 +51,6 @@ export default function DashboardPage() {
           subtitle="Clientes ativos"
           icon={Users}
           gradientClass="stat-card-gradient-1"
-        />
-        <StatsCard
-          title="Hospedagens Ativas"
-          value={String(activeHostings.length)}
-          subtitle={`${mockStats.pending_domains} domínios a vencer`}
-          icon={Server}
-          gradientClass="stat-card-gradient-5"
         />
         <StatsCard
           title="Pagamentos Pendentes"
@@ -124,7 +114,6 @@ export default function DashboardPage() {
               {[
                 { label: "Novo Pedido", href: "/sales/pedidos", color: "text-blue-400" },
                 { label: "Novo Cliente", href: "/sales/clientes", color: "text-emerald-400" },
-                { label: "Nova Hospedagem", href: "/hospedagem", color: "text-purple-400" },
                 { label: "Gerar Site com IA", href: "/ia/gerar-site", color: "text-cyan-400" },
               ].map((action) => (
                 <Link
@@ -174,38 +163,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Hosting expiry alerts */}
-      <div className="bg-[#111827] border border-[#1f2937] rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between p-5 border-b border-[#1f2937]">
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-400" />
-            <h2 className="text-white font-semibold">Alertas de Vencimento</h2>
-          </div>
-          <Link
-            href="/hospedagem"
-            className="flex items-center gap-1 text-blue-400 hover:text-blue-300 text-sm transition-colors"
-          >
-            Gerenciar <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 divide-y md:divide-y-0 md:divide-x divide-[#1f2937]">
-          {mockHostings.map((hosting) => (
-            <div key={hosting.id} className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Server className="w-4 h-4 text-gray-500" />
-                <p className="text-white text-sm font-medium truncate">{hosting.client_name}</p>
-              </div>
-              <p className="text-gray-400 text-xs mb-1">{hosting.plan}</p>
-              <p className="text-gray-500 text-xs">Vence: {formatDate(hosting.expiry_date)}</p>
-              <div className="mt-2">
-                <Badge className={getStatusColor(hosting.status)}>
-                  {getStatusLabel(hosting.status)}
-                </Badge>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

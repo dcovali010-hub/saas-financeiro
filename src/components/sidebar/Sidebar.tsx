@@ -12,8 +12,6 @@ import {
   Users,
   UserCog,
   Globe,
-  Globe2,
-  Server,
   Bot,
   Wand2,
   MessageCircle,
@@ -49,21 +47,6 @@ const navSections: NavSection[] = [
       { label: "Clientes", href: "/sales/clientes", icon: Users },
       { label: "Usuários", href: "/sales/usuarios", icon: UserCog },
       { label: "Domínios", href: "/sales/dominios", icon: Globe },
-    ],
-  },
-  {
-    title: "WEBSITE MENSAL",
-    items: [
-      { label: "Pedidos", href: "/website-mensal/pedidos", icon: ShoppingCart },
-      { label: "Clientes", href: "/website-mensal/clientes", icon: Users },
-      { label: "Usuários", href: "/website-mensal/usuarios", icon: UserCog },
-      { label: "Domínios", href: "/website-mensal/dominios", icon: Globe2 },
-    ],
-  },
-  {
-    title: "HOSPEDAGEM",
-    items: [
-      { label: "Hospedagens", href: "/hospedagem", icon: Server },
     ],
   },
   {
