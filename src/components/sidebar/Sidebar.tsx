@@ -8,19 +8,9 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import type { UserRole } from "@/types";
 import {
-  LayoutDashboard,
-  ShoppingCart,
-  Users,
-  UserCog,
-  Globe,
-  Bot,
-  Wand2,
-  MessageCircle,
-  LogOut,
-  Zap,
-  Menu,
-  X,
-  ChevronRight,
+  LayoutDashboard, LogOut, Menu, X, ChevronRight,
+  UtensilsCrossed, Table2, ShoppingBag, BookOpen,
+  CalendarCheck, Package, Users, ChefHat, CreditCard, BookMarked,
 } from "lucide-react";
 
 interface NavItem {
@@ -36,7 +26,9 @@ interface NavSection {
   items: NavItem[];
 }
 
-const ALL_ROLES: UserRole[] = ["admin", "financeiro", "suporte", "vendedor"];
+const ALL_ROLES: UserRole[] = ["admin", "gerente", "garcom", "cozinha", "caixa", "cliente"];
+const STAFF: UserRole[] = ["admin", "gerente", "garcom", "cozinha", "caixa"];
+const MGMT: UserRole[] = ["admin", "gerente"];
 
 const navSections: NavSection[] = [
   {
@@ -47,22 +39,37 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    title: "SALES",
-    roles: ALL_ROLES,
+    title: "GUEST",
+    roles: ["cliente"],
     items: [
-      { label: "Orders", href: "/sales/pedidos", icon: ShoppingCart, roles: ["admin", "financeiro", "vendedor"] },
-      { label: "Clients", href: "/sales/clientes", icon: Users, roles: ALL_ROLES },
-      { label: "Users", href: "/sales/usuarios", icon: UserCog, roles: ["admin"] },
-      { label: "Domains", href: "/sales/dominios", icon: Globe, roles: ALL_ROLES },
+      { label: "Menu", href: "/sales/dominios", icon: BookOpen, roles: ["cliente"] },
+      { label: "My Order", href: "/cliente/meus-pedidos", icon: ShoppingBag, roles: ["cliente"] },
     ],
   },
   {
-    title: "AI & COMMUNICATION",
-    roles: ["admin"],
+    title: "FLOOR",
+    roles: STAFF,
     items: [
-      { label: "AI Agent", href: "/ia/agente", icon: Bot, roles: ["admin"] },
-      { label: "Generate Site", href: "/ia/gerar-site", icon: Wand2, roles: ["admin"] },
-      { label: "WhatsApp", href: "/ia/whatsapp", icon: MessageCircle, roles: ["admin"] },
+      { label: "Tables", href: "/sales/clientes", icon: Table2, roles: STAFF },
+      { label: "Orders", href: "/sales/pedidos", icon: ShoppingBag, roles: ["admin", "gerente", "garcom", "caixa"] },
+      { label: "Kitchen Queue", href: "/cozinha/fila", icon: ChefHat, roles: ["admin", "gerente", "cozinha"] },
+    ],
+  },
+  {
+    title: "MANAGEMENT",
+    roles: MGMT,
+    items: [
+      { label: "Reservations", href: "/restaurante/reservas", icon: CalendarCheck, roles: MGMT },
+      { label: "Menu", href: "/sales/dominios", icon: BookMarked, roles: MGMT },
+      { label: "Inventory", href: "/restaurante/estoque", icon: Package, roles: MGMT },
+      { label: "Staff", href: "/sales/usuarios", icon: Users, roles: ["admin"] },
+    ],
+  },
+  {
+    title: "CASHIER",
+    roles: ["caixa"],
+    items: [
+      { label: "Payments", href: "/caixa/pagamentos", icon: CreditCard, roles: ["caixa"] },
     ],
   },
 ];
@@ -75,7 +82,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully");
+    toast.success("See you next time!");
     router.push("/login");
     onClose?.();
   };
@@ -87,12 +94,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Logo */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-[#1f2937] flex-shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0">
-            <Zap className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
+            <UtensilsCrossed className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">AgencySaaS</p>
-            <p className="text-gray-500 text-xs">Financial Panel</p>
+            <p className="text-white font-bold text-sm leading-tight">Golden Fork</p>
+            <p className="text-gray-500 text-xs">Restaurant System</p>
           </div>
         </div>
         {onClose && (
@@ -130,7 +137,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                     >
                       <item.icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", active ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
                       <span className="truncate">{item.label}</span>
-                      {active && <ChevronRight className="w-3 h-3 ml-auto text-blue-300 opacity-70" />}
+                      {active && <ChevronRight className="w-3 h-3 ml-auto text-amber-300 opacity-70" />}
                     </Link>
                   );
                 })}
@@ -142,12 +149,14 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* User + Logout */}
       <div className="border-t border-[#1f2937] p-3 flex-shrink-0">
         <div className="flex items-center gap-3 px-2 py-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">{user?.name?.charAt(0) ?? "A"}</span>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-xs font-bold">{user?.name?.charAt(0) ?? "G"}</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-medium truncate">{user?.name}</p>
-            <p className="text-gray-500 text-xs truncate capitalize">{user?.role}</p>
+            <p className="text-gray-500 text-xs truncate capitalize">
+              {user?.role === "cliente" ? "Table Guest" : user?.role}
+            </p>
           </div>
         </div>
         <button

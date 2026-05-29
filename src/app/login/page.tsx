@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
-import { Eye, EyeOff, LogIn, Zap } from "lucide-react";
+import { Eye, EyeOff, LogIn, UtensilsCrossed } from "lucide-react";
+
+const DEMO_LOGINS = [
+  { label: "Owner",   email: "admin@goldenfork.com",   color: "text-amber-400" },
+  { label: "Manager", email: "gerente@goldenfork.com",  color: "text-purple-400" },
+  { label: "Waiter",  email: "garcom@goldenfork.com",   color: "text-blue-400" },
+  { label: "Kitchen", email: "cozinha@goldenfork.com",  color: "text-red-400" },
+  { label: "Cashier", email: "caixa@goldenfork.com",    color: "text-emerald-400" },
+];
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +27,7 @@ export default function LoginPage() {
     setLoading(true);
     const ok = await login(email, password);
     if (ok) {
-      toast.success("Logged in successfully!");
+      toast.success("Welcome back!");
       router.push("/dashboard");
     } else {
       toast.error("Invalid email or password");
@@ -27,52 +35,46 @@ export default function LoginPage() {
     setLoading(false);
   };
 
-  const demoLogins = [
-    { label: "Admin", email: "admin@agencia.com", color: "text-purple-400" },
-    { label: "Finance", email: "financeiro@agencia.com", color: "text-blue-400" },
-    { label: "Support", email: "suporte@agencia.com", color: "text-cyan-400" },
-    { label: "Sales", email: "vendedor@agencia.com", color: "text-emerald-400" },
-  ];
-
   return (
     <div className="min-h-screen bg-[#0a0f1e] flex items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-600/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-600/8 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-md relative">
+        {/* Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+              <UtensilsCrossed className="w-6 h-6 text-white" />
             </div>
-            <span className="text-white font-bold text-xl">AgencySaaS</span>
+            <div className="text-left">
+              <p className="text-white font-bold text-xl leading-tight">Golden Fork</p>
+              <p className="text-amber-400/70 text-xs">Restaurant System</p>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-          <p className="text-gray-400 text-sm">Sign in with your credentials to access</p>
+          <h1 className="text-2xl font-bold text-white mb-1">Staff Login</h1>
+          <p className="text-gray-500 text-sm">Sign in to access your dashboard</p>
         </div>
 
-        <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-8">
+        {/* Form */}
+        <div className="bg-[#111827] border border-[#1f2937] rounded-2xl p-7">
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="your@goldenfork.com"
                 required
-                className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
               <div className="relative">
                 <input
                   type={showPass ? "text" : "password"}
@@ -80,12 +82,12 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-3 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full bg-[#0a0f1e] border border-[#1f2937] rounded-xl px-4 py-3 pr-12 text-white placeholder-gray-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                 >
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -95,34 +97,40 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                <>
-                  <LogIn className="w-4 h-4" />
-                  Sign In
-                </>
+                <><LogIn className="w-4 h-4" />Sign In</>
               )}
             </button>
           </form>
 
+          {/* Demo logins */}
           <div className="mt-6 pt-6 border-t border-[#1f2937]">
-            <p className="text-xs text-gray-500 text-center mb-3">Demo access (password: 123456)</p>
+            <p className="text-xs text-gray-600 text-center mb-3">Demo — click to fill (password: 123456)</p>
             <div className="grid grid-cols-2 gap-2">
-              {demoLogins.map((d) => (
+              {DEMO_LOGINS.map((d) => (
                 <button
                   key={d.email}
                   onClick={() => { setEmail(d.email); setPassword("123456"); }}
-                  className="text-xs px-3 py-2 rounded-lg bg-[#0a0f1e] border border-[#1f2937] hover:border-gray-500 transition-colors text-left"
+                  className="text-xs px-3 py-2.5 rounded-xl bg-[#0a0f1e] border border-[#1f2937] hover:border-amber-500/30 transition-colors text-left"
                 >
-                  <span className={`font-medium ${d.color}`}>{d.label}</span>
+                  <span className={`font-semibold ${d.color}`}>{d.label}</span>
                   <br />
-                  <span className="text-gray-500">{d.email}</span>
+                  <span className="text-gray-600 truncate block">{d.email}</span>
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Guest access note */}
+          <div className="mt-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
+            <p className="text-amber-400/70 text-xs text-center">
+              🍽️ Guests — scan the QR code at your table at{" "}
+              <span className="font-mono text-amber-400">/mesa/[number]</span>
+            </p>
           </div>
         </div>
       </div>

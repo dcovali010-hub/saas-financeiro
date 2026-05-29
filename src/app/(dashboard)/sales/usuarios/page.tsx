@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { mockUsers } from "@/lib/mock-data";
 import { getRoleColor, getRoleLabel } from "@/lib/utils";
@@ -10,24 +9,35 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Input, Select } from "@/components/ui/Input";
-import { Plus, UserCog, Shield, ToggleLeft, ToggleRight } from "lucide-react";
+import { Plus, Shield, ToggleLeft, ToggleRight, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import type { User, UserRole } from "@/types";
 
 const rolePermissions: Record<UserRole, string[]> = {
-  admin: ["Dashboard", "All modules", "Users", "Settings"],
-  financeiro: ["Dashboard", "Orders", "Clients", "Financial reports"],
-  suporte: ["Dashboard", "Orders (view)", "Clients", "Domains"],
-  vendedor: ["Dashboard", "Orders", "Clients", "Domains"],
+  admin:    ["Dashboard", "All modules", "Staff management", "Reports"],
+  gerente:  ["Dashboard", "Tables", "Orders", "Reservations", "Inventory"],
+  garcom:   ["Dashboard", "Tables", "Orders"],
+  cozinha:  ["Dashboard", "Kitchen queue"],
+  caixa:    ["Dashboard", "Orders", "Payments"],
+  cliente:  ["Menu", "My order", "Rate experience"],
 };
 
-export default function SalesUsersPage() {
+const roleColors: Record<UserRole, string> = {
+  admin:   "from-amber-500 to-amber-700",
+  gerente: "from-purple-600 to-purple-800",
+  garcom:  "from-blue-600 to-blue-800",
+  cozinha: "from-red-600 to-red-800",
+  caixa:   "from-emerald-600 to-emerald-800",
+  cliente: "from-pink-600 to-pink-800",
+};
+
+export default function StaffPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>(mockUsers.filter((u) => u.role !== "cliente"));
   const [modalOpen, setModalOpen] = useState(false);
   const [permModal, setPermModal] = useState<User | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", role: "vendedor" as UserRole });
+  const [form, setForm] = useState({ name: "", email: "", role: "garcom" as UserRole });
 
   useEffect(() => {
     if (user && user.role !== "admin") router.replace("/dashboard");
@@ -37,7 +47,7 @@ export default function SalesUsersPage() {
 
   const handleCreate = () => {
     if (!form.name || !form.email) {
-      toast.error("Please fill in name and email");
+      toast.error("Name and email are required");
       return;
     }
     const newUser: User = {
@@ -48,8 +58,8 @@ export default function SalesUsersPage() {
     };
     setUsers([...users, newUser]);
     setModalOpen(false);
-    setForm({ name: "", email: "", role: "vendedor" });
-    toast.success("User created successfully!");
+    setForm({ name: "", email: "", role: "garcom" });
+    toast.success("Staff member added!");
   };
 
   const toggleActive = (id: string) => {
@@ -57,29 +67,25 @@ export default function SalesUsersPage() {
     toast.success("Status updated");
   };
 
+  const DISPLAY_ROLES: UserRole[] = ["admin", "gerente", "garcom", "cozinha", "caixa"];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-white text-xl font-bold">System Users</h2>
-          <p className="text-gray-400 text-sm mt-0.5">Role-based access control</p>
+          <h2 className="text-white text-xl font-bold">Staff</h2>
+          <p className="text-gray-400 text-sm mt-0.5">Golden Fork team management</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <Plus className="w-4 h-4" />
-          New User
+          Add Staff
         </Button>
       </div>
 
-      {/* Role cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {(["admin", "financeiro", "suporte", "vendedor"] as UserRole[]).map((role) => {
+      {/* Role summary */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        {DISPLAY_ROLES.map((role) => {
           const count = users.filter((u) => u.role === role).length;
-          const roleColors: Record<UserRole, string> = {
-            admin: "from-purple-600 to-purple-800",
-            financeiro: "from-blue-600 to-blue-800",
-            suporte: "from-cyan-600 to-cyan-800",
-            vendedor: "from-emerald-600 to-emerald-800",
-          };
           return (
             <div key={role} className={`rounded-2xl p-4 bg-gradient-to-br ${roleColors[role]} text-white`}>
               <p className="text-white/70 text-xs uppercase tracking-wider mb-1">{getRoleLabel(role)}</p>
@@ -90,13 +96,13 @@ export default function SalesUsersPage() {
         })}
       </div>
 
-      {/* Users table */}
+      {/* Staff table */}
       <div className="bg-[#111827] border border-[#1f2937] rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#1f2937]">
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">User</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Staff</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Email</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Role</th>
                 <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-5 py-3.5">Status</th>
@@ -104,47 +110,30 @@ export default function SalesUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1f2937]">
-              {users.map((user) => (
-                <tr key={user.id} className="hover:bg-[#0f172a] transition-colors">
+              {users.map((u) => (
+                <tr key={u.id} className="hover:bg-[#0f172a] transition-colors">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">{user.name.charAt(0)}</span>
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">{u.name.charAt(0)}</span>
                       </div>
-                      <span className="text-white text-sm font-medium">{user.name}</span>
+                      <span className="text-white text-sm font-medium">{u.name}</span>
                     </div>
                   </td>
+                  <td className="px-5 py-4"><span className="text-gray-400 text-sm">{u.email}</span></td>
+                  <td className="px-5 py-4"><Badge className={getRoleColor(u.role)}>{getRoleLabel(u.role)}</Badge></td>
                   <td className="px-5 py-4">
-                    <span className="text-gray-400 text-sm">{user.email}</span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <Badge className={getRoleColor(user.role)}>{getRoleLabel(user.role)}</Badge>
-                  </td>
-                  <td className="px-5 py-4">
-                    <button
-                      onClick={() => toggleActive(user.id)}
-                      className="flex items-center gap-2 text-sm transition-colors"
-                    >
-                      {user.active ? (
-                        <>
-                          <ToggleRight className="w-5 h-5 text-emerald-400" />
-                          <span className="text-emerald-400">Active</span>
-                        </>
+                    <button onClick={() => toggleActive(u.id)} className="flex items-center gap-2 text-sm transition-colors">
+                      {u.active ? (
+                        <><ToggleRight className="w-5 h-5 text-emerald-400" /><span className="text-emerald-400">Active</span></>
                       ) : (
-                        <>
-                          <ToggleLeft className="w-5 h-5 text-gray-500" />
-                          <span className="text-gray-500">Inactive</span>
-                        </>
+                        <><ToggleLeft className="w-5 h-5 text-gray-500" /><span className="text-gray-500">Inactive</span></>
                       )}
                     </button>
                   </td>
                   <td className="px-5 py-4">
-                    <button
-                      onClick={() => setPermModal(user)}
-                      className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      <Shield className="w-3.5 h-3.5" />
-                      Permissions
+                    <button onClick={() => setPermModal(u)} className="flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors">
+                      <Shield className="w-3.5 h-3.5" />Permissions
                     </button>
                   </td>
                 </tr>
@@ -154,20 +143,20 @@ export default function SalesUsersPage() {
         </div>
       </div>
 
-      {/* Create Modal */}
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New User">
+      {/* Add Modal */}
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add Staff Member">
         <div className="space-y-4">
           <Input label="Name *" placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <Input label="Email *" type="email" placeholder="email@agency.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+          <Input label="Email *" type="email" placeholder="name@goldenfork.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           <Select label="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as UserRole })}>
-            <option value="admin">Administrator</option>
-            <option value="financeiro">Finance</option>
-            <option value="suporte">Support</option>
-            <option value="vendedor">Sales</option>
+            <option value="gerente">Manager</option>
+            <option value="garcom">Waiter</option>
+            <option value="cozinha">Kitchen</option>
+            <option value="caixa">Cashier</option>
           </Select>
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreate}><Plus className="w-4 h-4" />Create User</Button>
+            <Button onClick={handleCreate}><Users className="w-4 h-4" />Add Member</Button>
           </div>
         </div>
       </Modal>
@@ -177,18 +166,14 @@ export default function SalesUsersPage() {
         {permModal && (
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-3 bg-[#0a0f1e] rounded-xl">
-              <UserCog className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-white text-sm font-medium">{getRoleLabel(permModal.role)}</p>
-                <p className="text-gray-500 text-xs">Current role</p>
-              </div>
+              <Badge className={getRoleColor(permModal.role)}>{getRoleLabel(permModal.role)}</Badge>
             </div>
             <div>
               <p className="text-gray-400 text-xs uppercase tracking-wider mb-3">Allowed access</p>
               <div className="space-y-2">
                 {rolePermissions[permModal.role].map((perm) => (
                   <div key={perm} className="flex items-center gap-2 p-2.5 bg-[#0a0f1e] rounded-lg">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
                     <span className="text-gray-300 text-sm">{perm}</span>
                   </div>
                 ))}

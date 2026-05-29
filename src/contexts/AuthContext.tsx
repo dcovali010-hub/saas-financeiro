@@ -20,38 +20,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const DEMO_USERS: User[] = [
-  {
-    id: "USR-001",
-    name: "Douglas Admin",
-    email: "admin@agencia.com",
-    role: "admin",
-    created_at: "2024-01-01",
-    active: true,
-  },
-  {
-    id: "USR-002",
-    name: "Ana Financeiro",
-    email: "financeiro@agencia.com",
-    role: "financeiro",
-    created_at: "2024-02-15",
-    active: true,
-  },
-  {
-    id: "USR-003",
-    name: "Carlos Suporte",
-    email: "suporte@agencia.com",
-    role: "suporte",
-    created_at: "2024-03-01",
-    active: true,
-  },
-  {
-    id: "USR-004",
-    name: "Julia Vendas",
-    email: "vendedor@agencia.com",
-    role: "vendedor",
-    created_at: "2024-04-10",
-    active: true,
-  },
+  { id: "USR-001", name: "Marcus Rivera", email: "admin@goldenfork.com", role: "admin", created_at: "2023-01-01", active: true },
+  { id: "USR-002", name: "Sofia Chen", email: "gerente@goldenfork.com", role: "gerente", created_at: "2023-03-15", active: true },
+  { id: "USR-003", name: "Jake Morrison", email: "garcom@goldenfork.com", role: "garcom", created_at: "2023-06-01", active: true },
+  { id: "USR-005", name: "Chef Marco Vitale", email: "cozinha@goldenfork.com", role: "cozinha", created_at: "2023-01-15", active: true },
+  { id: "USR-006", name: "Emma Walsh", email: "caixa@goldenfork.com", role: "caixa", created_at: "2024-01-20", active: true },
+  { id: "USR-007", name: "Table 5 Guest", email: "mesa5@goldenfork.com", role: "cliente", created_at: "2025-05-29", active: true, table_id: "TBL-005" },
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

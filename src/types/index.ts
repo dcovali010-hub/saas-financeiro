@@ -1,115 +1,97 @@
-export type UserRole = "admin" | "financeiro" | "suporte" | "vendedor";
+export type UserRole = "admin" | "gerente" | "garcom" | "cozinha" | "caixa" | "cliente";
 
-export type OrderStatus =
-  | "pendente"
-  | "processando"
-  | "concluido"
-  | "cancelado";
-
-export type DomainStatus = "ativo" | "vencido" | "pendente" | "transferindo";
-
-export type HostingStatus = "ativo" | "suspenso" | "cancelado" | "pendente";
-
-export type SiteStatus = "rascunho" | "em_producao" | "publicado" | "pausado";
+export type TableStatus = "livre" | "ocupada" | "reservada" | "limpeza";
+export type OrderStatus = "pendente" | "preparando" | "pronto" | "entregue" | "cancelado" | "pago";
+export type MenuCategory = "entradas" | "pratos_principais" | "sobremesas" | "bebidas";
+export type PaymentMethod = "dinheiro" | "cartao" | "pix";
+export type ReservationStatus = "confirmada" | "pendente" | "cancelada" | "chegou";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: UserRole;
-  avatar?: string;
   created_at: string;
   active: boolean;
+  table_id?: string;
 }
 
-export interface Client {
+export interface Table {
+  id: string;
+  number: number;
+  capacity: number;
+  status: TableStatus;
+  section: string;
+  waiter_id?: string;
+  waiter_name?: string;
+  opened_at?: string;
+}
+
+export interface MenuItem {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  company?: string;
-  created_at: string;
-  total_orders: number;
-  total_spent: number;
+  category: MenuCategory;
+  price: number;
+  description: string;
+  available: boolean;
+  prep_time: number;
+  popular?: boolean;
+}
+
+export interface OrderItem {
+  menu_item_id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  notes?: string;
 }
 
 export interface Order {
   id: string;
-  client_id: string;
-  client_name: string;
-  description: string;
-  value: number;
+  table_id: string;
+  table_number: number;
+  items: OrderItem[];
   status: OrderStatus;
-  module: "sales" | "website_mensal";
+  total: number;
+  waiter_id: string;
+  waiter_name: string;
+  guests: number;
   created_at: string;
-  due_date?: string;
+  updated_at: string;
+  payment_method?: PaymentMethod;
 }
 
-export interface Domain {
+export interface Reservation {
   id: string;
-  domain: string;
-  client_id: string;
   client_name: string;
-  expiry_date: string;
-  status: DomainStatus;
-  auto_renew: boolean;
-  registrar?: string;
-  price_yearly: number;
-}
-
-export interface Hosting {
-  id: string;
-  plan: string;
-  client_id: string;
-  client_name: string;
-  monthly_value: number;
-  expiry_date: string;
-  status: HostingStatus;
-  server: string;
-  disk_usage?: number;
-  disk_limit?: number;
-}
-
-export interface GeneratedSite {
-  id: string;
-  client_id: string;
-  client_name: string;
-  site_name: string;
-  business_type: string;
-  domain?: string;
-  status: SiteStatus;
-  created_at: string;
-  url?: string;
-}
-
-export interface WhatsAppMessage {
-  id: string;
-  contact: string;
   phone: string;
-  message: string;
-  direction: "inbound" | "outbound";
-  timestamp: string;
-  status: "sent" | "delivered" | "read" | "failed";
-  type: "text" | "template" | "billing" | "followup";
+  date: string;
+  time: string;
+  guests: number;
+  table_id?: string;
+  table_number?: number;
+  status: ReservationStatus;
+  notes?: string;
 }
 
-export interface AIAgent {
+export interface InventoryItem {
   id: string;
   name: string;
-  prompt: string;
-  active: boolean;
-  triggers: string[];
-  responses: number;
-  created_at: string;
+  quantity: number;
+  unit: string;
+  min_quantity: number;
+  category: string;
+  last_updated: string;
 }
 
 export interface DashboardStats {
-  total_revenue: number;
-  monthly_revenue: number;
-  total_orders: number;
-  total_clients: number;
-  active_hostings: number;
-  pending_domains: number;
-  pending_payments: number;
-  monthly_growth: number;
+  revenue_today: number;
+  revenue_week: number;
+  revenue_month: number;
+  tables_occupied: number;
+  tables_total: number;
+  orders_today: number;
+  reservations_today: number;
+  avg_ticket: number;
+  items_low_stock: number;
 }
